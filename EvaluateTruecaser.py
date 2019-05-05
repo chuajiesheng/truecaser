@@ -1,21 +1,20 @@
 from Truecaser import *
-import cPickle
+import _pickle as cPickle
 import nltk
-import string
 
 
 def evaluateTrueCaser(testSentences, wordCasingLookup, uniDist, backwardBiDist, forwardBiDist, trigramDist):
     correctTokens = 0
     totalTokens = 0
-    
+
     for sentence in testSentences:
         tokensCorrect = nltk.word_tokenize(sentence)
         tokens = [token.lower() for token in tokensCorrect]
         tokensTrueCase = getTrueCase(tokens, 'title', wordCasingLookup, uniDist, backwardBiDist, forwardBiDist, trigramDist)
         
         perfectMatch = True
-        
-        for idx in xrange(len(tokensCorrect)):
+
+        for idx in range(len(tokensCorrect)):
             totalTokens += 1
             if tokensCorrect[idx] == tokensTrueCase[idx]:
                 correctTokens += 1
@@ -23,15 +22,14 @@ def evaluateTrueCaser(testSentences, wordCasingLookup, uniDist, backwardBiDist, 
                 perfectMatch = False
         
         if not perfectMatch:
-            print tokensCorrect
-            print tokensTrueCase
-        
-            print "-------------------"
-    
+            print(tokensCorrect)
+            print(tokensTrueCase)
 
-    print "Accuracy: %.2f%%" % (correctTokens / float(totalTokens)*100)
-    
-    
+            print("-------------------")
+
+    print("Accuracy: %.2f%%" % (correctTokens / float(totalTokens) * 100))
+
+
 def defaultTruecaserEvaluation(wordCasingLookup, uniDist, backwardBiDist, forwardBiDist, trigramDist):
     testSentences = [
         "Its website was launched on February 4, 2004 by Mark Zuckerberg with his Harvard College roommates and fellow students Eduardo Saverin, Andrew McCollum, Dustin Moskovitz, and Chris Hughes."
@@ -90,8 +88,9 @@ def defaultTruecaserEvaluation(wordCasingLookup, uniDist, backwardBiDist, forwar
     ]
     
     evaluateTrueCaser(testSentences, wordCasingLookup, uniDist, backwardBiDist, forwardBiDist, trigramDist)
-    
-if __name__ == "__main__":       
+
+
+if __name__ == "__main__":
     f = open('english_distributions.obj', 'rb')
     uniDist = cPickle.load(f)
     backwardBiDist = cPickle.load(f)
@@ -99,5 +98,5 @@ if __name__ == "__main__":
     trigramDist = cPickle.load(f)
     wordCasingLookup = cPickle.load(f)
     f.close()
-    
+
     defaultTruecaserEvaluation(wordCasingLookup, uniDist, backwardBiDist, forwardBiDist, trigramDist)
